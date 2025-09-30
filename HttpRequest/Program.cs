@@ -86,7 +86,7 @@ class Post : IHttpRequestBuilder
     }
     public void SetBody()
     {
-        Console.Write("Введите тело запроса: ");
+        Console.Write("Введите тело : ");
         request.AppendData("Body: " + Console.ReadLine());
     }
 
@@ -113,7 +113,7 @@ class Put : IHttpRequestBuilder
     }
     public void SetBody()
     {
-        Console.Write("Введите тело запроса: ");
+        Console.Write("Введите тело : ");
         request.AppendData("Body: " + Console.ReadLine());
     }
 
