@@ -1,164 +1,272 @@
 ﻿using System;
+using System.Collections.Generic;
 
-class HttpRequestBuilder
-{
-    static void Main()
-    {
-        Console.WriteLine("Выберите метод (GET, POST, PUT, DELETE): ");
-        string method = Console.ReadLine()?.ToUpper() ?? "GET";
-
-        IHttpRequestBuilder builder = method switch
-        {
-            "GET" => new Get(),
-            "POST" => new Post(),
-            "PUT" => new Put(),
-            "DELETE" => new Delete(),
-            _ => new Get()
-        };
-
-        HttpDirector director = new HttpDirector(builder);
-        var request = director.BuildFull();
-
-        Console.WriteLine("\n ваша запрос");
-        Console.WriteLine(request.AboutRequest());
-    }
-}
-
-
-
-class HttpRequestProduct
+class HttpRequestData
 {
     private string data;
-    public HttpRequestProduct() => data = "";
+    public HttpRequestData() => data = "";
     public string AboutRequest() => data;
     public void AppendData(string str) => data += str + "\n";
 }
 
-interface IHttpRequestBuilder
+interface IRequestConstructor
 {
-    void SetMethod();
-    void SetUrl();
-    void AddHeaders();
-    void SetBody();
-    HttpRequestProduct GetRequest();
+    void CreateMethod();
+    void CreateUrl();
+    void CreateHeaders();
+    void CreateBody();
+    void CreateTimeout();
+    void CreateQueryParams();
+    HttpRequestData GetRequest();
 }
 
-class Get : IHttpRequestBuilder
+class GetConstructor : IRequestConstructor
 {
-    private HttpRequestProduct request;
-    public Get() => request = new HttpRequestProduct();
+    private HttpRequestData request;
+    public GetConstructor() => request = new HttpRequestData();
 
-    public void SetMethod() => request.AppendData("Method: GET");
-    public void SetUrl()
+    public void CreateMethod() => request.AppendData("(create) Method: GET");
+    public void CreateUrl()
     {
         Console.Write("Введите URL для GET: ");
-        request.AppendData("URL: " + Console.ReadLine());
+        request.AppendData("(create) URL: " + Console.ReadLine());
     }
-    public void AddHeaders()
+    public void CreateHeaders()
     {
-        Console.Write("Введите заголовок : ");
-        string header = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(header))
-            request.AppendData("Header: " + header);
+        Console.Write("Добавить заголовок? (y/n): ");
+        if (Console.ReadLine()?.ToLower() == "y")
+        {
+            Console.Write("Введите название заголовка: ");
+            string name = Console.ReadLine();
+            Console.Write("Введите значение заголовка: ");
+            string value = Console.ReadLine();
+            request.AppendData($"(create) Header: {name}: {value}");
+        }
     }
-    public void SetBody() => request.AppendData("Body: (у GET нет тела  )");
-
-    public HttpRequestProduct GetRequest() => request;
+    public void CreateBody() => request.AppendData("(create) Body: (у GET нет тела)");
+    public void CreateTimeout()
+    {
+        Console.Write("Введите таймаут в секундах: ");
+        request.AppendData("(create) Timeout: " + Console.ReadLine() + " seconds");
+    }
+    public void CreateQueryParams()
+    {
+        Console.Write("Добавить query параметры? (y/n): ");
+        if (Console.ReadLine()?.ToLower() == "y")
+        {
+            Console.Write("Введите название параметра: ");
+            string name = Console.ReadLine();
+            Console.Write("Введите значение параметра: ");
+            string value = Console.ReadLine();
+            request.AppendData($"(create) Query Param: {name}={value}");
+        }
+    }
+    public HttpRequestData GetRequest() => request;
 }
 
-class Post : IHttpRequestBuilder
+class PostConstructor : IRequestConstructor
 {
-    private HttpRequestProduct request;
-    public Post() => request = new HttpRequestProduct();
+    private HttpRequestData request;
+    public PostConstructor() => request = new HttpRequestData();
 
-    public void SetMethod() => request.AppendData("Method: POST");
-    public void SetUrl()
+    public void CreateMethod() => request.AppendData("(create) Method: POST");
+    public void CreateUrl()
     {
         Console.Write("Введите URL для POST: ");
-        request.AppendData("URL: " + Console.ReadLine());
+        request.AppendData("(create) URL: " + Console.ReadLine());
     }
-    public void AddHeaders()
+    public void CreateHeaders()
     {
-        Console.Write("Введите заголовок : ");
-        string header = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(header))
-            request.AppendData("Header: " + header);
+        Console.Write("Добавить заголовок? (y/n): ");
+        if (Console.ReadLine()?.ToLower() == "y")
+        {
+            Console.Write("Введите название заголовка: ");
+            string name = Console.ReadLine();
+            Console.Write("Введите значение заголовка: ");
+            string value = Console.ReadLine();
+            request.AppendData($"(create) Header: {name}: {value}");
+        }
     }
-    public void SetBody()
+    public void CreateBody()
     {
-        Console.Write("Введите тело : ");
-        request.AppendData("Body: " + Console.ReadLine());
+        Console.Write("Введите тело запроса: ");
+        request.AppendData("(create) Body: " + Console.ReadLine());
     }
-
-    public HttpRequestProduct GetRequest() => request;
+    public void CreateTimeout()
+    {
+        Console.Write("Введите таймаут в секундах: ");
+        request.AppendData("(create) Timeout: " + Console.ReadLine() + "");
+    }
+    public void CreateQueryParams()
+    {
+        Console.Write("Добавить query параметры? (y/n): ");
+        if (Console.ReadLine()?.ToLower() == "y")
+        {
+            Console.Write("Введите название параметра: ");
+            string name = Console.ReadLine();
+            Console.Write("Введите значение параметра: ");
+            string value = Console.ReadLine();
+            request.AppendData($"(create) Query Param: {name}={value}");
+        }
+    }
+    public HttpRequestData GetRequest() => request;
 }
 
-class Put : IHttpRequestBuilder
+class PutConstructor : IRequestConstructor
 {
-    private HttpRequestProduct request;
-    public Put() => request = new HttpRequestProduct();
+    private HttpRequestData request;
+    public PutConstructor() => request = new HttpRequestData();
 
-    public void SetMethod() => request.AppendData("Method: PUT");
-    public void SetUrl()
+    public void CreateMethod() => request.AppendData("(create) Method: PUT");
+    public void CreateUrl()
     {
         Console.Write("Введите URL для PUT: ");
-        request.AppendData("URL: " + Console.ReadLine());
+        request.AppendData("(create) URL: " + Console.ReadLine());
     }
-    public void AddHeaders()
+    public void CreateHeaders()
     {
-        Console.Write("Введите заголовок : ");
-        string header = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(header))
-            request.AppendData("Header: " + header);
+        Console.Write("Добавить заголовок? (y/n): ");
+        if (Console.ReadLine()?.ToLower() == "y")
+        {
+            Console.Write("Введите название заголовка: ");
+            string name = Console.ReadLine();
+            Console.Write("Введите значение заголовка: ");
+            string value = Console.ReadLine();
+            request.AppendData($"(create) Header: {name}: {value}");
+        }
     }
-    public void SetBody()
+    public void CreateBody()
     {
-        Console.Write("Введите тело : ");
-        request.AppendData("Body: " + Console.ReadLine());
+        Console.Write("Введите тело запроса: ");
+        request.AppendData("(create) Body: " + Console.ReadLine());
     }
-
-    public HttpRequestProduct GetRequest() => request;
+    public void CreateTimeout()
+    {
+        Console.Write("Введите таймаут в секундах: ");
+        request.AppendData("(create) Timeout: " + Console.ReadLine() + " seconds");
+    }
+    public void CreateQueryParams()
+    {
+        Console.Write("Добавить query параметры? (y/n): ");
+        if (Console.ReadLine()?.ToLower() == "y")
+        {
+            Console.Write("Введите название параметра: ");
+            string name = Console.ReadLine();
+            Console.Write("Введите значение параметра: ");
+            string value = Console.ReadLine();
+            request.AppendData($"(create) Query Param: {name}={value}");
+        }
+    }
+    public HttpRequestData GetRequest() => request;
 }
 
-class Delete : IHttpRequestBuilder
+class DeleteConstructor : IRequestConstructor
 {
-    private HttpRequestProduct request;
-    public Delete() => request = new HttpRequestProduct();
+    private HttpRequestData request;
+    public DeleteConstructor() => request = new HttpRequestData();
 
-    public void SetMethod() => request.AppendData("Method: DELETE");
-    public void SetUrl()
+    public void CreateMethod() => request.AppendData("(create) Method: DELETE");
+    public void CreateUrl()
     {
         Console.Write("Введите URL для DELETE: ");
-        request.AppendData("URL: " + Console.ReadLine());
+        request.AppendData("(create) URL: " + Console.ReadLine());
     }
-    public void AddHeaders()
+    public void CreateHeaders()
     {
-        Console.Write("Введите заголовок : ");
-        string header = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(header))
-            request.AppendData("Header: " + header);
+        Console.Write("Добавить заголовок? (y/n): ");
+        if (Console.ReadLine()?.ToLower() == "y")
+        {
+            Console.Write("Введите название заголовка: ");
+            string name = Console.ReadLine();
+            Console.Write("Введите значение заголовка: ");
+            string value = Console.ReadLine();
+            request.AppendData($"(create) Header: {name}: {value}");
+        }
     }
-    public void SetBody() => request.AppendData("Body: ( не нужен)");
-
-    public HttpRequestProduct GetRequest() => request;
+    public void CreateBody() => request.AppendData("(create) Body: (не нужен)");
+    public void CreateTimeout()
+    {
+        Console.Write("Введите таймаут в секундах: ");
+        request.AppendData("(create) Timeout: " + Console.ReadLine() + " seconds");
+    }
+    public void CreateQueryParams()
+    {
+        Console.Write("Добавить query параметры? (y/n): ");
+        if (Console.ReadLine()?.ToLower() == "y")
+        {
+            Console.Write("Введите название параметра: ");
+            string name = Console.ReadLine();
+            Console.Write("Введите значение параметра: ");
+            string value = Console.ReadLine();
+            request.AppendData($"(create) Query Param: {name}={value}");
+        }
+    }
+    public HttpRequestData GetRequest() => request;
 }
 
-
-class HttpDirector
+class RequestDirector
 {
-    private IHttpRequestBuilder builder;
-    public HttpDirector(IHttpRequestBuilder _builder) => builder = _builder;
+    private IRequestConstructor constructor;
+    public RequestDirector(IRequestConstructor _constructor) => constructor = _constructor;
+    public void SetConstructor(IRequestConstructor _constructor) => constructor = _constructor;
 
-    public void SetBuilder(IHttpRequestBuilder _builder) => builder = _builder;
-
-    public HttpRequestProduct BuildFull()
+    public HttpRequestData BuildBasicRequest()
     {
-        builder.SetMethod();
-        builder.SetUrl();
-        builder.AddHeaders();
-        builder.SetBody();
-        return builder.GetRequest();
+        constructor.CreateMethod();
+        constructor.CreateUrl();
+        return constructor.GetRequest();
+    }
+
+    public HttpRequestData BuildFullRequest()
+    {
+        constructor.CreateMethod();
+        constructor.CreateUrl();
+        constructor.CreateHeaders();
+        constructor.CreateBody();
+        constructor.CreateTimeout();
+        constructor.CreateQueryParams();
+        return constructor.GetRequest();
+    }
+
+    public HttpRequestData BuildRequestWithHeaders()
+    {
+        constructor.CreateMethod();
+        constructor.CreateUrl();
+        constructor.CreateHeaders();
+        constructor.CreateTimeout();
+        return constructor.GetRequest();
     }
 }
 
+// Добавляем класс с Main методом
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("=== Конструктор HTTP запросов ===");
 
+        IRequestConstructor getConstructor = new GetConstructor();
+        RequestDirector director = new RequestDirector(getConstructor);
+        HttpRequestData getRequest = director.BuildFullRequest();
+        Console.WriteLine("\nВаш GET запрос:");
+        Console.WriteLine(getRequest.AboutRequest());
+
+        IRequestConstructor postConstructor = new PostConstructor();
+        director.SetConstructor(postConstructor);
+        HttpRequestData postRequest = director.BuildFullRequest();
+        Console.WriteLine("\nВаш POST запрос:");
+        Console.WriteLine(postRequest.AboutRequest());
+
+        IRequestConstructor putConstructor = new PutConstructor();
+        director.SetConstructor(putConstructor);
+        HttpRequestData putRequest = director.BuildRequestWithHeaders();
+        Console.WriteLine("\nВаш PUT запрос (с заголовками):");
+        Console.WriteLine(putRequest.AboutRequest());
+
+        IRequestConstructor deleteConstructor = new DeleteConstructor();
+        director.SetConstructor(deleteConstructor);
+        HttpRequestData deleteRequest = director.BuildBasicRequest();
+        Console.WriteLine("\nВаш DELETE запрос (базовый):");
+        Console.WriteLine(deleteRequest.AboutRequest());
+    }
+}
