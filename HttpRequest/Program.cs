@@ -1,6 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 
+       Console.WriteLine(" Конструктор HTTP запросов");
+
+        IRequestConstructor getConstructor = new GetConstructor();
+        RequestDirector director = new RequestDirector(getConstructor);
+        HttpRequestData getRequest = director.BuildFullRequest();
+        Console.WriteLine("\nВаш GET запрос:");
+        Console.WriteLine(getRequest.AboutRequest());
+
+        IRequestConstructor postConstructor = new PostConstructor();
+        director.SetConstructor(postConstructor);
+        HttpRequestData postRequest = director.BuildFullRequest();
+        Console.WriteLine("\nВаш POST запрос:");
+        Console.WriteLine(postRequest.AboutRequest());
+
+        IRequestConstructor putConstructor = new PutConstructor();
+        director.SetConstructor(putConstructor);
+        HttpRequestData putRequest = director.BuildRequestWithHeaders();
+        Console.WriteLine("\nВаш PUT запрос (с заголовками):");
+        Console.WriteLine(putRequest.AboutRequest());
+
+        IRequestConstructor deleteConstructor = new DeleteConstructor();
+        director.SetConstructor(deleteConstructor);
+        HttpRequestData deleteRequest = director.BuildBasicRequest();
+        Console.WriteLine("\nВаш DELETE запрос (базовый):");
+        Console.WriteLine(deleteRequest.AboutRequest());
+
+
+
 class HttpRequestData
 {
     private string data;
@@ -238,35 +266,7 @@ class RequestDirector
     }
 }
 
-// Добавляем класс с Main методом
-class Program
-{
-    static void Main()
-    {
-        Console.WriteLine("=== Конструктор HTTP запросов ===");
 
-        IRequestConstructor getConstructor = new GetConstructor();
-        RequestDirector director = new RequestDirector(getConstructor);
-        HttpRequestData getRequest = director.BuildFullRequest();
-        Console.WriteLine("\nВаш GET запрос:");
-        Console.WriteLine(getRequest.AboutRequest());
-
-        IRequestConstructor postConstructor = new PostConstructor();
-        director.SetConstructor(postConstructor);
-        HttpRequestData postRequest = director.BuildFullRequest();
-        Console.WriteLine("\nВаш POST запрос:");
-        Console.WriteLine(postRequest.AboutRequest());
-
-        IRequestConstructor putConstructor = new PutConstructor();
-        director.SetConstructor(putConstructor);
-        HttpRequestData putRequest = director.BuildRequestWithHeaders();
-        Console.WriteLine("\nВаш PUT запрос (с заголовками):");
-        Console.WriteLine(putRequest.AboutRequest());
-
-        IRequestConstructor deleteConstructor = new DeleteConstructor();
-        director.SetConstructor(deleteConstructor);
-        HttpRequestData deleteRequest = director.BuildBasicRequest();
-        Console.WriteLine("\nВаш DELETE запрос (базовый):");
-        Console.WriteLine(deleteRequest.AboutRequest());
-    }
-}
+   
+ 
+ 
